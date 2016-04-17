@@ -95,8 +95,8 @@ class Fill(object):
         end=Point(iend.posX - radius,
                   iend.posY - radius)
         
-        numlnx= math.ceil((end.posX - start.posX)/(radius*2))
-        numlny= math.ceil((end.posY - start.posY)/(radius*2))
+        numlnx= math.ceil((end.posX - start.posX)/(radius*2))+1
+        numlny= math.ceil((end.posY - start.posY)/(radius*2))+1
         
         lnsx= list(ifrange(start.posX, end.posX, numlnx))
         lnsy= list(ifrange(start.posY, end.posY, numlny))
@@ -108,6 +108,29 @@ class Fill(object):
                              Point(lnsx[i], lnsy[i], istart.posZ),
                              Point(lnsx[numlnx-i], lnsy[numlny-i], istart.posZ))
 
+        
+        if numlnx > numlny:
+            self.subpath.add(Safe)
+        
+            self.subpath.add(Line,
+                             Point(start.posX, (start.posY+end.posY)/2))
+            
+            self.subpath.add(Dive, istart.posZ)        
+            
+            self.subpath.add(Line,
+                             Point(posX=end.posX))
+        else:
+            self.subpath.add(Safe)
+        
+            self.subpath.add(Line,
+                             Point((start.posX+end.posX)/2, start.posY))
+
+            self.subpath.add(Dive, istart.posZ)
+            
+            self.subpath.add(Line,
+                             Point(posY=end.posY))
+            
+            
     def __str__(self):
         return str(self.subpath)
     
