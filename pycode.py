@@ -34,7 +34,7 @@ class Point (object):
             return getattr(self, 'pos' + key)
 
     def __str__ (self):
-        return (' '.join(a+str(self[a])
+        return (' '.join(a+'{0:.4f}'.format(self[a])
                          for a in ['X', 'Y', 'Z']
                          if self[a] is not None))
 
