@@ -8,10 +8,6 @@ def ifrange (start, end, steps):
         
     yield end
 
-class Tool (object):
-    def __init__ (self, diameter=0.0):
-        self.diameter= float(diameter)
-
 class Point (object):
     def __init__ (self, posX=None, posY=None, posZ=None):
         self.posX=posX
@@ -58,15 +54,18 @@ class Comment(object):
         return ('('+self.comment+')')
         
 class Tool(object):
-    def __init__ (self, toolpath, diameter):
+    def __init__ (self, toolpath, diameter, number=1, spinspeed=3000):
         self.diameter= diameter
         self.toolpath= toolpath
+        self.number= number
+        self.spinspeed= spinspeed
 
         toolpath.tool= self
 
     def __str__(self):
-        return('(Change to {}{} diameter tool)'
-               .format(self.diameter, self.toolpath.units))
+        return('(Change to {}{} diameter tool)\nT{}\nM03 S{}'
+               .format(self.diameter, self.toolpath.units,
+                       self.number, self.spinspeed))
 
 class Box(object):
     def __init__ (self, parpath, start, end):
@@ -163,7 +162,6 @@ class Program(Path):
         self.path.append({'mm':'G21','in':'G20'}[units])
         self.path.append('G90')
         self.path.append('G94 F'+str(feedrate))
-        self.path.append('M03')
 
     def __str__ (self):
         s= '\n'.join(map(str,self.path+['M05', 'M02']))
