@@ -51,6 +51,23 @@ class Point (object):
 
         return Point(newX, newY, newZ)
 
+    def __add__(self, other):
+        kwargs=[('pos'+a, self[a] + other[a])
+                for a in ['X', 'Y', 'Z']
+                if self[a] is not None]
+
+        return (Point(**dict(kwargs)))
+
+    def __neg__(self):
+        kwargs=[('pos'+a, -self[a])
+                for a in ['X', 'Y', 'Z']
+                if self[a] is not None]
+
+        return (Point(**dict(kwargs)))
+
+    def __sub__(self, other):
+        return (self + -other)
+    
     def __getitem__(self, key):
         if key in ['X', 'Y', 'Z']:
             return getattr(self, 'pos' + key)
@@ -104,6 +121,24 @@ class Tool(object):
                .format(self.diameter, self.toolpath.units,
                        self.number, self.spinspeed))
 
+class Arc(object):
+    def __init__(self, toolpath, start, center, end, direction='CW'):
+        self.cmd= {'CW': 'G02', 'CCW' : 'G03'}[direction]
+        self.end= end
+        self.relcenter= center - start
+
+    def __str__(self):
+        rcs= str(self.relcenter)
+
+        for r in [('X', 'I'), ('Y', 'J'), ('Z', 'K')]:
+            rcs=rcs.replace(r[0], r[1])
+        
+        return('{} {} {}'.format(self.cmd, str(self.end),rcs))
+
+class Circle(Arc):
+    def __init__(self, toolpath, start, center, direction='CW'):
+        super().__init__(toolpath, start, center, start, direction)
+    
 class Box(object):
     def __init__ (self, parpath, start, end):
         self.subpath= Path(parpath.safe, parpath.units)

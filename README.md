@@ -8,7 +8,7 @@ less painfull.
 Issues
 ------
 
-- Lack of completeness (most importantly Circles)
+- Lack of completeness
 - Strange filling algorithm
 
 Screenshot
