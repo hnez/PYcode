@@ -29,6 +29,28 @@ class Point (object):
         self.posY=posY
         self.posZ=posZ
 
+    def new_relative (self, r=None, angle=None, dx=None, dy=None, dz=None):
+        newX= self.posX
+        newY= self.posY
+        newZ= self.posZ
+
+        if r is not None and angle is not None:
+            arad= math.radians(angle)
+
+            newX+=r*math.cos(arad)
+            newY+=r*math.sin(arad)
+
+        if dx is not None:
+            newX+=dx
+
+        if dy is not None:
+            newY+=dy
+
+        if dz is not None:
+            newZ+=dz
+
+        return Point(newX, newY, newZ)
+
     def __getitem__(self, key):
         if key in ['X', 'Y', 'Z']:
             return getattr(self, 'pos' + key)
